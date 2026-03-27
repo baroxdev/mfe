@@ -19,6 +19,18 @@ const prodConfig = {
       shared: packageJson.dependencies,
     }),
   ],
+  optimization: {
+    runtimeChunk: "single",
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
+  },
 };
 
 module.exports = merge(commonConfig, prodConfig);
