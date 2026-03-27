@@ -19,9 +19,18 @@ jobs:
       - uses: actions/checkout@v6
       - run: npm ci
       - run: npm run build
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.DO_SPACES_REGION }}
 
-      - uses: shinyinc/action-aws-cli@v1.2
-      - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET }}/container/lastest --endpoint-url https://${{ secrets.DO_SPACES_REGION }}.digitaloceanspaces.com
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Upload to Spaces
+        run: |
+          aws s3 sync dist "s3://${{ secrets.AWS_S3_BUCKET }}/container/latest" \
+            --endpoint-url "https://${{ secrets.DO_SPACES_REGION }}.digitaloceanspaces.com"
