@@ -19,6 +19,9 @@ const prodConfig = {
       shared: packageJson.dependencies,
     }),
   ],
+  optimization: {
+    runtimeChunk: "single",
+  },
 };
 
 module.exports = merge(commonConfig, prodConfig);
