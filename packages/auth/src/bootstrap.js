@@ -1,7 +1,7 @@
 import React from "react";
+import { createBrowserHistory, createMemoryHistory } from "history";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { createMemoryHistory, createBrowserHistory } from "history";
 
 const mount = (el, { onCallback, defaultHistory, initialEntries }) => {
   const history =
@@ -18,7 +18,6 @@ const mount = (el, { onCallback, defaultHistory, initialEntries }) => {
 
   return {
     onParentNavigate({ pathname: nextPathname }) {
-      console.log({ nextPathname });
       const { pathname } = history.location;
       if (pathname !== nextPathname) {
         history.push(nextPathname);
@@ -28,7 +27,7 @@ const mount = (el, { onCallback, defaultHistory, initialEntries }) => {
 };
 
 if (process.env.NODE_ENV === "development") {
-  const devRoot = document.querySelector("#_marketing-dev-root");
+  const devRoot = document.querySelector("#_auth-dev-root");
   if (devRoot) {
     mount(devRoot, { defaultHistory: createBrowserHistory() });
   }
