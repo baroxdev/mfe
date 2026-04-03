@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useCallback } from "react";
 import MarketingApp from "./components/MarketingApp";
 import AuthApp from "./components/AuthApp";
 import {
@@ -6,7 +6,13 @@ import {
   createGenerateClassName,
 } from "@material-ui/core/styles";
 import Header from "./components/Header";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 
 const AuthAppLazy = lazy(() => import("./components/AuthApp"));
 
@@ -15,14 +21,28 @@ const generateClassName = createGenerateClassName({
 });
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+
+  const onSignIn = useCallback(() => {
+    setIsSignedIn(true);
+
+    // navigate to the dashboard or home page after signing in
+  }, []);
+
+  const onSignOut = () => {
+    setIsSignedIn(false);
+  };
+
   return (
     <StylesProvider generateClassName={generateClassName}>
       <BrowserRouter>
         <div>
-          <Header />
+          <Header signedIn={isSignedIn} onSignOut={onSignOut} />
           <Switch>
             <Suspense fallback={<div>Loading...</div>}>
-              <Route path="/auth" component={AuthAppLazy} />
+              <Route path="/auth">
+                <AuthAppLazy onSignIn={onSignIn} />
+              </Route>
               <Route path="/" component={MarketingApp} />
             </Suspense>
           </Switch>
